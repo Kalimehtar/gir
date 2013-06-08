@@ -3,6 +3,7 @@ Racket-gir
 
 Racket GObjectIntrospection FFI
 
+License: BSD
 Release status: Alpha
 
 Now only objects, methods and functions are working. 
