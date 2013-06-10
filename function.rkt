@@ -1,5 +1,7 @@
 #lang racket/base
-(provide build-function)
+
+(require "contract.rkt")
+(provide (contract-out (build-function ffi-function-builder?)))
 
 (require "loadlib.rkt" "base.rkt" "glib.rkt" ffi/unsafe racket/format)
 
@@ -80,7 +82,7 @@
         (else ""))))
 
 (define (pointer->giarg giarg value) 
-  (ptr-set! giarg _pointer (if (procedure? value) (value 'this) value)))
+  (ptr-set! giarg _pointer (if (procedure? value) (value ':this) value)))
 
 (define (giarg->pointer giarg) 
   (ptr-ref giarg _pointer))
@@ -193,8 +195,6 @@
                  (inner out-translators null giargs-out))))
 
 (define (build-function info)
-  (unless (and info (cpointer? info))
-    (raise-argument-error 'build-function "info pointer" info))
   (define-values (in-trans out-trans) (get-args info))
   (define name (g-base-info-get-name info))
   (λ args

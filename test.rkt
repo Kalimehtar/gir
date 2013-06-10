@@ -12,7 +12,7 @@
 (displayln (gtk 'get-minor-version))
 
 (define (run)
-  (define win (gtk 'Window 'new 0))
-  (g-signal-connect-data (win 'this) "destroy" (λ () (gtk 'main-quit))  #f #f)
+  (define win (gtk 'Window 'new (gtk 'WindowType ':toplevel)))
+  (g-signal-connect-data (win ':this) "destroy" (λ () (gtk 'main-quit))  #f #f)
   (win 'show)
   (gtk 'main))

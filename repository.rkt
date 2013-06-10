@@ -7,7 +7,7 @@
                                    cpointer?)])
          gi-ffi)
 
-(require "loadlib.rkt" "glib.rkt" ffi/unsafe "base.rkt" "function.rkt" "object.rkt")
+(require "loadlib.rkt" "glib.rkt" ffi/unsafe "base.rkt" "function.rkt" "object.rkt" "enum.rkt")
 
 
 (define-gi* g-irepository-require (_fun (_pointer = #f) _string _string _int _pointer -> _pointer))
@@ -32,7 +32,8 @@
 (define (build-interface info args)
   (case (g-base-info-get-type info)
     [(function) (apply (build-function info) args)]
-    [(object) (apply (build-object info) args)]))
+    [(object) (apply (build-object info) args)]
+    [(enum) (apply (build-enum info) args)]))
   
 
 (define (gi-ffi namespace)

@@ -1,8 +1,8 @@
 #lang racket/base
+
 (provide with-g-error raise-g-error)
 
 (require "loadlib.rkt" ffi/unsafe)
-
 
 ;;; GError
 
