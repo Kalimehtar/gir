@@ -1,6 +1,7 @@
-#lang racket
-(require "loadlib.rkt" "base.rkt" "glib.rkt" ffi/unsafe)
-(provide build-function this)
+#lang racket/base
+(provide build-function)
+
+(require "loadlib.rkt" "base.rkt" "glib.rkt" ffi/unsafe racket/format)
 
 (define-gi* g-function-info-invoke (_fun _pointer _pointer _int
                                          _pointer _int _pointer _pointer -> _bool))
@@ -61,30 +62,22 @@
   (inner list 0))
 
 (define (describe-type type-info)
-  (with-output-to-string
-   (λ ()
-     (when (g-type-info-is-pointer type-info) (write "pointer to "))
-     (let ([tag (g-type-info-get-tag type-info)])
-       (display tag)
-       (case tag
-         ((interface)
-          (display " to ")
-          (display (g-type-info-get-interface type-info)))
-         ((array)
-          (display " of ")
-          (display (describe-type (g-type-info-get-param-type type-info 0)))
-          (display ", length: ")
-          (display (g-type-info-get-array-length type-info))
-          (display ", fixed length: ")
-          (display (g-type-info-get-array-fixed-size type-info))
-          (when (g-type-info-is-zero-terminated type-info)
-            (display ", zero terminated")))
-         ((ghash)
-          (display " of {")
-          (display (describe-type (g-type-info-get-param-type type-info 0)))
-          (display ", ")
-          (display (describe-type (g-type-info-get-param-type type-info 1)))
-          (display "}")))))))
+  (define tag (g-type-info-get-tag type-info))
+  (~a (if (g-type-info-is-pointer type-info) "pointer to " "")
+      tag
+      (case tag
+        ((interface)
+         (~a " to " (g-type-info-get-interface type-info)))
+        ((array)
+         (~a " of " (describe-type (g-type-info-get-param-type type-info 0))
+             ", length param: " (g-type-info-get-array-length type-info)
+             ", fixed length: " (g-type-info-get-array-fixed-size type-info)            
+             (if (g-type-info-is-zero-terminated type-info) ", zero terminated" "")))
+        ((ghash)
+         (~a " of {" (describe-type (g-type-info-get-param-type type-info 0))
+             ", " (describe-type (g-type-info-get-param-type type-info 1))
+             "}"))
+        (else ""))))
 
 (define (pointer->giarg giarg value) 
   (ptr-set! giarg _pointer (if (procedure? value) (value 'this) value)))
@@ -151,10 +144,10 @@
   (define (method? flags)
     (define (check-flags flags acc)
       (if (null? flags) acc
-          (case (first flags) 
+          (case (car flags) 
             ((constructor) #f)
-            ((method) (check-flags (rest flags) #t))
-            (else (check-flags (rest flags) acc)))))
+            ((method) (check-flags (cdr flags) #t))
+            (else (check-flags (cdr flags) acc)))))
     (check-flags flags #f))
   (inner 0 
          (if (method? (g-function-info-get-flags info))
@@ -172,7 +165,7 @@
         (raise-argument-error (string->symbol name) 
                               (translator-tag (car translators))
                               (car args)))
-      (inner (rest args) (rest translators))))
+      (inner (cdr args) (cdr translators))))
   (inner args translators))
 
 (define (giargs translators [values #f])
@@ -180,8 +173,8 @@
   (when values
     (define (inner translators values ptr)
       (unless (null? translators)        
-        ((value->giarg (first translators)) ptr (first values))
-        (inner (rest translators) (rest values) (ptr-add ptr 1 _giarg))))
+        ((value->giarg (car translators)) ptr (car values))
+        (inner (cdr translators) (cdr values) (ptr-add ptr 1 _giarg))))
     (inner translators values ptr))
   ptr)
 
@@ -192,8 +185,8 @@
   (define (inner translators values ptr)
     (if (null? translators)
         (reverse values)
-        (inner (rest translators) 
-               (cons ((giarg->value (first translators)) ptr) values) 
+        (inner (cdr translators) 
+               (cons ((giarg->value (car translators)) ptr) values) 
                (ptr-add ptr 1 _giarg))))
   (apply values (cons
                  ((giarg->value res-trans) giarg-res)

@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 (require "loadlib.rkt" ffi/unsafe ffi/unsafe/alloc)
 (provide _info g-base-info-get-name)
 

@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 (require "loadlib.rkt" "base.rkt" ffi/unsafe "function.rkt")
 (provide build-object)
 
@@ -6,13 +6,9 @@
 (define-gi* g-object-info-get-parent (_fun _pointer -> _info))
 
 (define (find-method info name)
-  (if info      
-    (let ([method (g-object-info-find-method info name)])
-      (or (g-object-info-find-method info name)
-          (begin
-            ;(display "Checking parent: ") (displayln (g-base-info-get-name info))
-            (find-method (g-object-info-get-parent info) name))))
-    #f))
+  (and info
+       (or (g-object-info-find-method info name)
+           (find-method (g-object-info-get-parent info) name))))      
 
 (define (name-this? name)
   (eq? name 'this))
@@ -28,5 +24,4 @@
           (let ([function-info (find-method info (gtk-name name))])
             (unless function-info
               (raise-argument-error 'build-object "FFI method name" name))
-            (displayln "Run")
             (apply (build-function function-info) this args))))))

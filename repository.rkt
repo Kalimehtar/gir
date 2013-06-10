@@ -1,12 +1,14 @@
-#lang racket
-(require "loadlib.rkt" "glib.rkt" ffi/unsafe ffi/unsafe/alloc
-         "base.rkt" "function.rkt" "object.rkt")
+#lang racket/base
+(require (except-in racket/contract ->))
 (provide (contract-out 
           [require-repository (->* (string?)
                                    (#:version string?
                                     #:lazy boolean?)
                                    cpointer?)])
          gi-ffi)
+
+(require "loadlib.rkt" "glib.rkt" ffi/unsafe "base.rkt" "function.rkt" "object.rkt")
+
 
 (define-gi* g-irepository-require (_fun (_pointer = #f) _string _string _int _pointer -> _pointer))
 

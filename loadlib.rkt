@@ -1,6 +1,8 @@
-#lang racket
-(require "utils.rkt" ffi/unsafe ffi/unsafe/define (for-syntax racket/string syntax/parse))
+#lang racket/base
 (provide define-gi* define-gtk* gtk-init gtk-init* gtk-name g-signal-connect-data)
+
+(require "utils.rkt" ffi/unsafe ffi/unsafe/define
+         (for-syntax racket/base syntax/parse))
 
 (define gtk-lib 
   (case (system-type)
@@ -17,10 +19,14 @@
 (define-ffi-definer define-gtk gtk-lib)
 (define-ffi-definer define-gi gi-lib)
 
-(define (gtk-name name)
-  (if (symbol? name)
-      (gtk-name (symbol->string name))
-      (string-replace name "-" "_")))
+(module gtk-name racket/base
+  (provide gtk-name)
+  (require racket/string)
+  (define (gtk-name name)
+    (if (symbol? name)
+        (gtk-name (symbol->string name))
+        (string-replace name "-" "_"))))
+(require 'gtk-name (for-syntax 'gtk-name))
 
 (with-template 
  (src dst)
@@ -35,9 +41,7 @@
                          #:defaults ([c-id (datum->syntax
                                             #'id 
                                             (string->symbol 
-                                             (string-replace 
-                                              (symbol->string (syntax-e #'id)) 
-                                              "-" "_")))]))) ...)
+                                             (gtk-name (syntax-e #'id))))]))) ...)
       #`(src id expr params ... kwd ... ... #:c-id c-id)])))
 
 (define-gtk* gtk-init (_fun _pointer _pointer -> _void))

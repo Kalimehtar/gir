@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 (require "loadlib.rkt" "repository.rkt")
 (provide gtk run)

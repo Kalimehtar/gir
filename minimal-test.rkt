@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 
 ;;; This is test for GTK without GObjectIntrospection
 
