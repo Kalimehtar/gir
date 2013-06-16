@@ -11,20 +11,20 @@
 (define (find-method info name)
   (and info
        (or (g-object-info-find-method info name)
-           (find-method (g-object-info-get-parent info) name))))      
+           (find-method (g-object-info-get-parent info) name))))
 
 (define (name-this? name)
   (eq? name ':this))
 
 (define (build-object info)
   (define (call name args)
-    (define function-info (find-method info (gtk-name name)))
+    (define function-info (find-method info (c-name name)))
     (if function-info
         (apply (build-function function-info) args)
         (raise-argument-error 'build-object "FFI method name" name)))
   (λ (name . args)
     (define this (call name args))
     (λ (name . args)
-      (if (name-this? name) 
+      (if (name-this? name)
           this
           (call name (cons this args))))))

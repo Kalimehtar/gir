@@ -18,7 +18,7 @@
    [message _string]))
   
 
-(define-gtk* g-quark-to-string (_fun _uint32 -> _string))
+(define-gobject* g-quark-to-string (_fun _uint32 -> _string))
 
 (define (make-message g-error)
   ; g-error = GError**

@@ -36,10 +36,10 @@
     [(enum) (apply (build-enum info) args)]))
   
 
-(define (gi-ffi namespace)
-  (require-repository namespace)
+(define (gi-ffi namespace [version #f])
+  (require-repository namespace #:version version)
   (λ (name . rest)
-    (let ([info (g-irepository-find-by-name namespace (gtk-name name))])
+    (let ([info (g-irepository-find-by-name namespace (c-name name))])
       (if info
           (build-interface info rest)
           (raise-argument-error 'gi-ffi "name of FFI bind" name)))))

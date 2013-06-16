@@ -1,5 +1,5 @@
 #lang scribble/manual
-@(require (for-label racket "repository.rkt"))
+@(require (for-label racket))
 
 @title{GObject Introspection}
 

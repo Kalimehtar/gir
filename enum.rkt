@@ -25,7 +25,7 @@
       (cons (g-base-info-get-name func-info)
             (build-function func-info))))
   (λ (name . args)
-    (define name* (gtk-name name))
+    (define name* (c-name name))
     (if (char=? (string-ref name* 0) #\:)
         (cdr (or (assoc (substring name* 1) values-dict)
                  (raise-argument-error 'build-enum "FFI enum value name" name)))
