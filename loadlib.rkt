@@ -19,11 +19,11 @@
 (define-ffi-definer define-gobject gobject-lib)
 (define-ffi-definer define-gi gi-lib)
 
-(module c-name typed/racket/base
+(module c-name racket/base
   (provide c-name)
-  (require/typed racket/string [string-replace (String String String -> String)])
+  (require racket/string)
 
-  (define: (c-name [name : (U Symbol String)]) : String
+  (define (c-name name)
     (if (symbol? name)
         (c-name (symbol->string name))
         (string-replace name "-" "_"))))
