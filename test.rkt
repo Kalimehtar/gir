@@ -1,15 +1,17 @@
 #lang racket/base
 
-(require "loadlib.rkt" "repository.rkt" ffi/unsafe)
+(require "loadlib.rkt" "main.rkt")
 (provide gtk run)
 
-(g-type-init)
 (define gtk (gi-ffi "Gtk"  "2.0"))
 
 (define (run)
+  (gtk 'init 0 #f)
   (define win (gtk 'Window 'new (gtk 'WindowType ':toplevel)))
-  (g-signal-connect-data (win ':this) "destroy" (λ () (gtk 'main-quit))  #f #f)
+  (connect win "destroy" (λ (window) (gtk 'main-quit)))
   (define button (gtk 'Button 'new-with-label "Hello, world"))
+  (connect button "clicked" (λ (button) 
+                              (displayln (button 'get-label))))
   (button 'show)
   (win 'add button)
   (win 'show)

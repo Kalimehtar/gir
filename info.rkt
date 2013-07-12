@@ -1,2 +1,11 @@
 #lang setup/infotab
-(define scribblings '(("manual.scrbl" ())))
+(define name "GI-FFI")
+(define blurb
+  '("GI-FFI is a foreign function interface to the GObjectIntrospection"
+    "which is a modern interface to GTK, GNOME, DBus and so on"))
+(define primary-file "main.rkt")
+(define categories '(system ui))
+(define version "0.2")
+; (define release-notes
+
+(define scribblings '(("manual.scrbl")))

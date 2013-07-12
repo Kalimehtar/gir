@@ -1,5 +1,5 @@
 #lang racket/base
-(provide define-gobject* define-gobject define-gi* define-gi g-type-init c-name g-signal-connect-data)
+(provide define-gobject* define-gobject define-gi* define-gi g-type-init c-name); g-signal-connect-data)
 
 (require "utils.rkt" ffi/unsafe ffi/unsafe/define
          (for-syntax racket/base syntax/parse))
@@ -46,4 +46,4 @@
       (syntax-protect (syntax/loc stx (src id expr params ... kwd ... ... #:c-id c-id)))])))
 
 (define-gobject* g-type-init (_fun -> _void))
-(define-gobject* g-signal-connect-data (_fun _pointer _string (_fun -> _void) _pointer _pointer -> _pointer))
+(g-type-init)

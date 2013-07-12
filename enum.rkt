@@ -21,7 +21,7 @@
             (g-value-info-get-value value-info))))
   (define methods-dict
     (for/list ([i (in-range (g-enum-info-get-n-methods info))])
-      (define func-info (g-enum-info-get-method i))
+      (define func-info (g-enum-info-get-method info i))
       (cons (g-base-info-get-name func-info)
             (build-function func-info))))
   (λ (name . args)
@@ -29,6 +29,7 @@
     (if (char=? (string-ref name* 0) #\:)
         (cdr (or (assoc (substring name* 1) values-dict)
                  (raise-argument-error 'build-enum "FFI enum value name" name)))
-        (apply (or (assoc name* methods-dict) 
-                   (raise-argument-error 'build-enum "FFI method name" name))
+        (apply (cdr (or (assoc name* methods-dict) 
+                        (raise-argument-error 'build-enum 
+                                              "FFI method name" name)))
                args))))

@@ -4,10 +4,11 @@
           [require-repository (->* (string?)
                                    (#:version string?
                                     #:lazy boolean?)
-                                   cpointer?)])
-         gi-ffi)
+                                   cpointer?)]
+          [gi-ffi (->* (string?) (string?) procedure?)]
+          [connect (->* (procedure? string? procedure?) (list?) exact-integer?)]))
 
-(require "loadlib.rkt" "glib.rkt" ffi/unsafe "base.rkt" "function.rkt" "object.rkt" "enum.rkt")
+(require "signals.rkt" "loadlib.rkt" "glib.rkt" ffi/unsafe "base.rkt" "function.rkt" "object.rkt" "enum.rkt")
 
 
 (define-gi* g-irepository-require (_fun (_pointer = #f) _string _string _int _pointer -> _pointer))
@@ -19,15 +20,8 @@
         
 ;(define-gi* g-irepository-get-info (_fun (_pointer = #f) _string _int -> _pointer))
 ;(define-gi* g-irepository-get-n-infos (_fun (_pointer = #f) _string -> _int))
-;(define-gi* g-irepository-find-by-gtype (_fun (_pointer = #f) _long -> _pointer))
 
 (define-gi* g-irepository-find-by-name (_fun (_pointer = #f) _string _string -> _info))
-
-(define-gi* g-base-info-get-type (_fun _pointer -> 
-                                       (_enum '(invalid function callback struct boxed 
-                                                        enum flags object interface constant 
-                                                        invalid union value signal vfunc
-                                                        property field arg type unresolved))))
 
 (define (build-interface info args)
   (case (g-base-info-get-type info)
