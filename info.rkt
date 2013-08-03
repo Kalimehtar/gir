@@ -6,6 +6,8 @@
 (define primary-file "main.rkt")
 (define categories '(system ui))
 (define version "0.2")
-; (define release-notes
-
 (define scribblings '(("manual.scrbl")))
+(define release-notes
+  (list '(ul
+          (li "0.1: Initial release ")
+          (li "0.2: Added (connect ...)"))))

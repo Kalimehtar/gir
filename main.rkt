@@ -6,9 +6,12 @@
                                     #:lazy boolean?)
                                    cpointer?)]
           [gi-ffi (->* (string?) (string?) procedure?)]
-          [connect (->* (procedure? string? procedure?) (list?) exact-integer?)]))
+          [connect (->* (procedure? string? procedure?) (list?) exact-integer?)])
+         get-properties set-properties
+         pointer field set-field)
 
-(require "signals.rkt" "loadlib.rkt" "glib.rkt" ffi/unsafe "base.rkt" "function.rkt" "object.rkt" "enum.rkt")
+(require "signal.rkt" "loadlib.rkt" "glib.rkt" ffi/unsafe 
+         "base.rkt" "function.rkt" "object.rkt" "enum.rkt" "const.rkt" "property.rkt")
 
 
 (define-gi* g-irepository-require (_fun (_pointer = #f) _string _string _int _pointer -> _pointer))
@@ -27,7 +30,8 @@
   (case (g-base-info-get-type info)
     [(function) (apply (build-function info) args)]
     [(object) (apply (build-object info) args)]
-    [(enum) (apply (build-enum info) args)]))
+    [(enum) (apply (build-enum info) args)]
+    [(constant) (get-const info)]))
   
 
 (define (gi-ffi namespace [version #f])
