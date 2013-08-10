@@ -1,7 +1,13 @@
 #lang scribble/manual
-@(require (for-label racket))
+@(require planet/scribble
+          (for-label racket "main.rkt"
+                     (this-package-in main)))
 
 @title{GObject Introspection}
+
+@defmodule/this-package[main]
+
+@section{Main interface}
 
 This is Gobject FFI. 
 
@@ -15,4 +21,78 @@ Usage example:
   (gtk 'main))
 ]
 
+Interface with the GObjectIntrospection is based on repositories. Main function is
+
+@defproc[(gi-ffi [repository-name string?] [version string? ""]) procedure?]{
+  Returns interface to repository with name @racket[repository-name]                                                                                                                                                                       
+}
+
+@section{Get FFI element}
+
+This interface takes as a first argument name of foreign object. Name could be @racket[string?] 
+or @racket[symbol?]. In both cases it's allowed to replace "_" with "-". So you can write either 
+"get_name" or 'get-name with the same result.
+
+If first argument is a name of function, then rest arguments are the arguments of the function and
+it returns result of the function.
+In example
+@racketblock[
+(define gtk (gi-ffi "Gtk"))
+(gtk 'init 0 #f)
+]
+gtk_init is called with 0 and null pointer.
+
+If first argument is a name of constant, then it returns value of the constant.
+For example,
+@racketblock[
+(gtk 'MAJOR-VERSION)
+]
+returns 2 for GTK2 or 3 for GTK3.
+
+If first argument is a name of enumeration, then second arguments should be value name. It returns integer value.
+For example,
+@racketblock[
+(gtk 'WindowType ':toplevel)
+]
+Returns 0.
+
+If first argument is a name of class (or struct), then the second argument should be a name of class constructor 
+(in GTK it is usually "new"), rest arguments are the arguments of the constructor.
+@racketblock[
+(define window (gtk 'Window 'new 0))
+]
+This call will return a representation of object.
+
+@section{Foreign objects}
+
+Representation of an object is also a function. First argument of it should be either name of method 
+(@racket[string?] or @racket[symbol?]) or special name.
+
+@racketblock[
+(window 'add button)
+]
+will call method "add" with argument "button".
+
+@subsection{Pointer to object}
+
+To get C pointer to an object call it with "method" :this.
+@racketblock[
+(window ':this)
+]
+
+@subsection{Fields}
+
+Getting and setting field values are done with :field and :set-field!.
+@racketblock[
+(define entry (gtk 'TargetEntry 'new "ok" 0 0))
+
+> (entry ':field 'flags)
+0
+> (entry ':set-field! 'flags 1)
+> (entry ':field 'flags)
+1
+]
+
+But you cannot set with :set-field! complex types such as structs, unions or even strings. 
+It is a restriction of GObjectIntrospection.
 

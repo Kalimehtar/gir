@@ -1,17 +1,13 @@
 #lang racket/base
 (require (except-in racket/contract ->))
 (provide (contract-out 
-          [require-repository (->* (string?)
-                                   (#:version string?
-                                    #:lazy boolean?)
-                                   cpointer?)]
           [gi-ffi (->* (string?) (string?) procedure?)]
-          [connect (->* (procedure? string? procedure?) (list?) exact-integer?)])
-         get-properties set-properties
-         pointer field set-field)
+          [connect (->* (procedure? string? procedure?) (list?) exact-integer?)]))
+         ;get-properties set-properties!
+         ;pointer field set-field!)
 
 (require "signal.rkt" "loadlib.rkt" "glib.rkt" ffi/unsafe 
-         "base.rkt" "function.rkt" "object.rkt" "enum.rkt" "const.rkt" "property.rkt")
+         "base.rkt" "function.rkt" "object.rkt" "struct.rkt" "enum.rkt" "const.rkt" "property.rkt")
 
 
 (define-gi* g-irepository-require (_fun (_pointer = #f) _string _string _int _pointer -> _pointer))
@@ -30,6 +26,7 @@
   (case (g-base-info-get-type info)
     [(function) (apply (build-function info) args)]
     [(object) (apply (build-object info) args)]
+    [(struct) (apply (build-struct info) args)]
     [(enum) (apply (build-enum info) args)]
     [(constant) (get-const info)]))
   

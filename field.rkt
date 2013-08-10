@@ -15,6 +15,6 @@
 
 (define (set ptr field value)
   (define translators (list (build-translator (g-field-info-get-type field))))
-  (define giargs (giargs translators (list value)))
-  (unless (g-field-info-set-field field ptr giargs)
+  (define giargs-out (giargs translators (list value)))
+  (unless (g-field-info-set-field field ptr giargs-out)
     (error "FFI set field failed:" (g-base-info-get-name field))))

@@ -6,9 +6,10 @@
          racket/match (prefix-in f: "field.rkt"))
 
 (define-gi* g-struct-info-find-method (_fun _pointer _string -> _info))
-(define-gi* g-struct-info-get-parent (_fun _pointer -> _info))
 (define-gi* g-struct-info-get-n-fields (_fun _pointer -> _int))
 (define-gi* g-struct-info-get-field (_fun _pointer _int -> _info))
+(define-gi* g-struct-info-get-n-methods (_fun _pointer -> _int))
+(define-gi* g-struct-info-get-method (_fun _pointer _int -> _info))
 
 
 (define (closures info)
@@ -33,9 +34,9 @@
         [(:field)
          (match args
            [(list name) (f:get this (find-field name))])]
-        [(:set-field) 
+        [(:set-field!) 
          (match args
-           [(list name value) (f:set (find-field name) value)])]
+           [(list name value) (f:set this (find-field name) value)])]
         [else (call name (cons this args))])))
   (values call closure))
 

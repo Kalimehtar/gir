@@ -10,4 +10,5 @@
 (define release-notes
   (list '(ul
           (li "0.1: Initial release ")
-          (li "0.2: Added (connect ...)"))))
+          (li "0.2: Added (connect ...)")
+          (li "0.9: Added (set-field ...) (field ...) (get-properties ...)"))))

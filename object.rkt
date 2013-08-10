@@ -1,7 +1,8 @@
 #lang racket/base
 
 (require "contract.rkt")
-(provide (contract-out (build-object ffi-builder?)) build-object-ptr _gobject pointer field set-field gtype->ffi)
+(provide (contract-out (build-object ffi-builder?))
+         build-object-ptr _gobject gtype->ffi set!-set-properties! set!-get-properties)
 
 (require "loadlib.rkt" "base.rkt" ffi/unsafe ffi/unsafe/alloc "function.rkt" "translator.rkt" "gtype.rkt"
          racket/match (prefix-in f: "field.rkt"))
@@ -19,7 +20,11 @@
 (define-gobject* g-object-unref (_fun _pointer -> _void) #:wrap (deallocator))
 (define-gobject* g-object-ref-sink (_fun _pointer -> _pointer) #:wrap (allocator g-object-unref))
 
-
+;;; will be defined in property.rkt
+(define set-properties! #f)
+(define (set!-set-properties! arg) (set! set-properties! arg))
+(define get-properties #f)
+(define (set!-get-properties arg) (set! get-properties arg))
 
 (define (closures info)
   (define (call name args)
@@ -43,9 +48,13 @@
         [(:field)
          (match args
            [(list name) (f:get this (find-field name))])]
-        [(:set-field) 
+        [(:set-field!) 
          (match args
-           [(list name value) (f:set (find-field name) value)])]
+           [(list name value) (f:set this (find-field name) value)])]
+        [(:set-properties!)
+         (set-properties! this args)]
+        [(:properties)
+         (get-properties this args)]
         [else (call name (cons this args))])))
   (values call closure))
 
@@ -58,12 +67,6 @@
 (define (build-object-ptr info ptr)
   (define-values (call closure) (closures info))
   (closure ptr))
-
-(define (pointer obj) (obj ':this))
-
-(define (field obj name) (obj ':field name))
-
-(define (set-field obj name value) (obj ':set-field name value))
 
 (define-gi* g-irepository-find-by-gtype (_fun (_pointer = #f) _long -> _pointer))
 
