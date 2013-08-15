@@ -1,6 +1,7 @@
 #lang scribble/manual
 @(require planet/scribble
-          (for-label racket "main.rkt"
+          (for-label racket/base racket/class ffi/unsafe "main.rkt" 
+                     (only-in "interface.rkt" pointer get-properties set-properties!)
                      (this-package-in main)))
 
 @title{GObject Introspection}
@@ -28,6 +29,11 @@ Interface with the GObjectIntrospection is based on repositories. Main function 
 }
 
 @section{Get FFI element}
+
+@(defproc* ([(repository [func-name (or/c string? symbol?)] [func-arg any/c] ...) any/c]
+            [(repository [const-name (or/c string? symbol?)]) any/c]
+            [(repository [enum-name (or/c string? symbol?)] [enum-value-name (or/c string? symbol?)]) exact-integer?]
+            [(repository [class-name (or/c string? symbol?)] [constructor-name (or/c string? symbol?)]) procedure?]))
 
 This interface takes as a first argument name of foreign object. Name could be @racket[string?] 
 or @racket[symbol?]. In both cases it's allowed to replace "_" with "-". So you can write either 
@@ -65,6 +71,8 @@ This call will return a representation of object.
 
 @section{Foreign objects}
 
+@(defproc (object [method-name (or/c string? symbol?)] [method-arg any/c] ...) any/c)
+
 Representation of an object is also a function. First argument of it should be either name of method 
 (@racket[string?] or @racket[symbol?]) or special name.
 
@@ -96,3 +104,38 @@ Getting and setting field values are done with :field and :set-field!.
 But you cannot set with :set-field! complex types such as structs, unions or even strings. 
 It is a restriction of GObjectIntrospection.
 
+@subsection{Properties}
+
+Getting and setting field values are done with :properties and :set-properties!. 
+You may get or set several properties at once.
+
+@racketblock[
+(define-values (width height) 
+  (window ':properties 'width-request 'height-request))
+(window ':set-properties! 'width-request 100 'height-request 200)
+]
+
+@section{Signals}
+
+@defproc[(connect [object procedure?] [signal-name (or/c symbol? string?)] [handler (or/c procedure? cpointer?)]) void?]
+
+@section{Alternative interface}
+
+If you like more traditional interface, you may use @racket[gi-ffi/interface] module
+
+@defmodule/this-package[interface]
+
+It provides interface in style of @racket[racket/class]: @racket[send], @racket[send/apply], @racket[dynamic-send], 
+@racket[set-field!], @racket[get-field], @racket[dynamic-get-field], @racket[dynamic-set-field!].
+
+Besides, it provides functional interface for object pointers and properties:
+
+@(defproc (pointer [object procedure?]) cpointer? "Returns pointer to object")
+
+@(defproc (get-properties [object procedure?] [property-name (or/c string? symbol?)] ...+) (values any/c ...+))
+
+@(defproc (set-properties! [object procedure?] 
+                           [property-name (or/c string? symbol?)] 
+                           [property-value any/c] 
+                           ...+ 
+                           ...+) void?)
