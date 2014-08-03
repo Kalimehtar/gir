@@ -1,12 +1,12 @@
 #lang scribble/manual
-@(require planet/scribble
-          (for-label racket/base racket/class ffi/unsafe "main.rkt" 
-                     (only-in "interface.rkt" pointer get-properties set-properties!)
+@(require (for-label racket/base racket/class ffi/unsafe "main.rkt" 
+                     (only-in "interface.rkt" pointer 
+                              get-properties set-properties!)
                      (this-package-in main)))
 
 @title{GObject Introspection}
 
-@defmodule/this-package[main]
+@(defmodule gir)
 
 @section{Main interface}
 
