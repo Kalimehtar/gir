@@ -122,7 +122,7 @@ You may get or set several properties at once.
 
 If you like more traditional interface, you may use @racket[gi-ffi/interface] module
 
-@defmodule/this-package[interface]
+@defmodule[interface]
 
 It provides interface in style of @racket[racket/class]: @racket[send], @racket[send/apply], @racket[dynamic-send], 
 @racket[set-field!], @racket[get-field], @racket[dynamic-get-field], @racket[dynamic-set-field!].
