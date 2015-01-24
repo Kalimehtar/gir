@@ -1,8 +1,7 @@
 #lang scribble/manual
-@(require (for-label racket/base racket/class ffi/unsafe "main.rkt" 
+@(require (for-label racket/base racket/class ffi/unsafe gir 
                      (only-in "interface.rkt" pointer 
-                              get-properties set-properties!)
-                     (this-package-in main)))
+                              get-properties set-properties!)))
 
 @title{GObject Introspection}
 
