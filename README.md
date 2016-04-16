@@ -1,7 +1,7 @@
 GObject Introspection
 
 ```racket
- (require (planet Kalimehtar/gi-ffi:1:=3))
+ (require gir)
 ```
 
 # 1. Main interface
@@ -144,11 +144,11 @@ Getting and setting field values are done with :properties and
 
 # 5. Alternative interface
 
-If you like more traditional interface, you may use `gi-ffi/interface`
+If you like more traditional interface, you may use `gir/interface`
 module
 
 ```racket
- (require (planet Kalimehtar/gi-ffi:1:=3/interface))
+ (require gir/interface)
 ```
 
 It provides interface in style of `racket/class`: `send`, `send/apply`,
