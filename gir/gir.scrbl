@@ -120,9 +120,9 @@ You may get or set several properties at once.
 
 @section{Alternative interface}
 
-If you like more traditional interface, you may use @racket[gi-ffi/interface] module
+If you like more traditional interface, you may use @racketmod[gir/interface] module
 
-@defmodule[interface]
+@defmodule[gir/interface]
 
 It provides interface in style of @racket[racket/class]: @racket[send], @racket[send/apply], @racket[dynamic-send], 
 @racket[set-field!], @racket[get-field], @racket[dynamic-get-field], @racket[dynamic-set-field!].
