@@ -120,7 +120,7 @@ You may get or set several properties at once.
 
 @section{Alternative interface}
 
-If you like more traditional interface, you may use @racketmodname[gir/interface] module
+If you like more traditional interface, you may use @racketmod[gir/interface] module
 
 @defmodule[gir/interface]
 
