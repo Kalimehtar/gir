@@ -5,19 +5,19 @@
          (for-syntax racket/base syntax/parse))
 
 (define gobject-lib 
-  (case (system-type)
-    [(windows) 
-     (ffi-lib "libgobject-2.0-0")]
-    [else (ffi-lib "libgobject-2.0" '("0" ""))]))
+  (ffi-lib (case (system-type)
+             [(windows) "libgobject-2.0-0"]
+             [else "libgobject-2.0" '("0" "")])
+           #:fail (λ () #f)))
 
 (define gi-lib 
-  (case (system-type)
-    [(windows) 
-     (ffi-lib "libgirepository-win32-1-0")]
-    [else (ffi-lib "libgirepository-1.0" '("1" "0" ""))]))
+  (ffi-lib (case (system-type)
+             [(windows) "libgirepository-win32-1-0"]
+             [else "libgirepository-1.0" '("1" "0" "")])
+           #:fail (λ () #f)))
 
-(define-ffi-definer define-gobject gobject-lib)
-(define-ffi-definer define-gi gi-lib)
+(define-ffi-definer define-gobject gobject-lib #:default-make-fail make-not-available)
+(define-ffi-definer define-gi gi-lib #:default-make-fail make-not-available)
 
 (module c-name racket/base
   (provide c-name)
