@@ -16,8 +16,8 @@
              [else "libgirepository-1.0"])
            #:fail (λ () #f)))
 
-(define-ffi-definer define-gobject gobject-lib #:default-make-fail make-not-available)
-(define-ffi-definer define-gi gi-lib #:default-make-fail make-not-available)
+(define-ffi-definer define-gobject gobject-lib #:default-make-fail (λ _ #f))
+(define-ffi-definer define-gi gi-lib #:default-make-fail (λ _ #f))
 
 (module c-name racket/base
   (provide c-name)
