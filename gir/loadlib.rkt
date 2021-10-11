@@ -7,13 +7,13 @@
 (define gobject-lib 
   (ffi-lib (case (system-type)
              [(windows) "libgobject-2.0-0"]
-             [else "libgobject-2.0" '("0" "")])
+             [else "libgobject-2.0"])
            #:fail (λ () #f)))
 
 (define gi-lib 
   (ffi-lib (case (system-type)
              [(windows) "libgirepository-win32-1-0"]
-             [else "libgirepository-1.0" '("1" "0" "")])
+             [else "libgirepository-1.0"])
            #:fail (λ () #f)))
 
 (define-ffi-definer define-gobject gobject-lib #:default-make-fail make-not-available)
