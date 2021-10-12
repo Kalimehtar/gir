@@ -46,4 +46,5 @@
       (syntax-protect (syntax/loc stx (src id expr params ... kwd ... ... #:c-id c-id)))])))
 
 (define-gobject* g-type-init (_fun -> _void))
-(g-type-init)
+(when gobject-lib
+  (g-type-init))
