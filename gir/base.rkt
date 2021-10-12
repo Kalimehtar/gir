@@ -14,8 +14,3 @@
                                                         property field arg type unresolved))))
 
 (define _info (make-ctype _pointer #f ((allocator g-base-info-unref) identity)))
-
-
-;(define-fun-syntax _info
-;  (syntax-id-rules (_info)
-;    [_info (type: _pointer post: (x => (((allocator g-base-info-unref) (λ () x)))))]))
