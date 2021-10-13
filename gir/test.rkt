@@ -3,7 +3,9 @@
 (require "main.rkt")
 (provide gtk run)
 
-(define gtk (gi-ffi "Gtk")) ;  "2.0"))
+(define gtk
+  (with-handlers ([exn:fail? (λ _ #f)])
+    (gi-ffi "Gtk"))) ;  "2.0"))
 
 (define (run)
   (gtk 'init 0 #f)

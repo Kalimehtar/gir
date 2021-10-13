@@ -7,10 +7,10 @@
 
 (define gtk-lib (case (system-type)
                   [(windows) 
-                   (ffi-lib "libgtk-win32-3-0")]
-                  [else (ffi-lib "libgtk-3" '("0" ""))]))
+                   (ffi-lib "libgtk-win32-3-0" #:fail (λ () #f))]
+                  [else (ffi-lib "libgtk-3" '("0" "") #:fail (λ () #f))]))
 
-(define-ffi-definer define-gtk gtk-lib)
+(define-ffi-definer define-gtk gtk-lib #:default-make-fail make-not-available)
 
 (define-gtk gtk_init (_fun _pointer _pointer -> _void))
 (define-gtk gtk_get_major_version (_fun -> _int))
